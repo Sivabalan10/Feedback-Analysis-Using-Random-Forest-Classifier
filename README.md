@@ -87,11 +87,9 @@ Evaluate the model's performance on the testing data.
 Results
 Below are some sample results showing the performance of the Random Forest classifier.
 
-Classification Report:
-`images/your_image.png`
-
-Model Accuracy:
-`images/your_image.png`
+Output:
+`images/Screenshot 2024-06-09 230133.png`
+`images/Screenshot 2024-06-09 230001.png`
 
 Contributing
 Contributions are welcome! Please read the contributing guidelines first.
