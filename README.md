@@ -88,7 +88,7 @@ Results
 Below are some sample results showing the performance of the Random Forest classifier.
 
 Output:
-`images/Screenshot 2024-06-09 230133.png`
+`images/Screenshot 2024-06-09 230133.png.png`
 `images/Screenshot 2024-06-09 230001.png`
 
 Contributing
