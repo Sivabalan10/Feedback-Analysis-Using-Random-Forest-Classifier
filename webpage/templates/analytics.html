@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <title>Feedback Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+    font-family: "Chakra Petch", sans-serif;
+    background-image: url('static/back1.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px; 
+    max-width: 1000px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.content {
+    max-width: 50%; 
+}
+
+.chart-container {
+    margin-top: 6%;
+    max-width: 33%; 
+    margin-right: 8%;
+}
+
+h1, h2, h3 {
+    color: #333;
+    margin: 0 0 15px 0; 
+}
+
+h1 {
+    font-size: 1.9em; 
+    margin-bottom: 15px; 
+}
+
+h2 {
+    font-size: 1.3em; 
+    margin-top: 20px; 
+    margin-bottom: 10px; 
+}
+
+h3 {
+    font-size: 1.1em; 
+    margin-bottom: 8px; 
+}
+
+.good-quality{
+    margin: 8px 0; 
+    padding: 10px; 
+    border-radius: 5px;
+    background-color: #e6ffe6;
+    color: green;
+}
+.poor-quality{
+    margin: 8px 0; 
+    padding: 10px; 
+    border-radius: 5px;
+    background-color: #ffe6e6;
+    color: red;
+    
+}
+
+.comments-container {
+    margin-bottom: 15px; 
+}
+
+.comments {
+    max-height: 80px; 
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+}
+
+.comments.show {
+    max-height: 200px; 
+}
+
+.show-more {
+    cursor: pointer;
+    color: gray;
+    text-decoration: underline;
+}
+
+canvas {
+    display: block;
+}
+
+.back-button {
+    display: inline-block;
+    font-family: "Chakra Petch", sans-serif;
+    margin-bottom: 15px; 
+    padding: 8px 16px; 
+    background-color: darkgray;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <h1><u>Feedback Analytics</u></h1>
+            <h2 style="color: #3f47b3;;">Overall Prediction: {{ overall_prediction }}</h2>
+            <h3 style="color: gray;">{{ recommendation }}</h3>
+
+            <div class="comments-container">
+                <h2>Good Quality Comments</h2>
+                <div class="good-quality comments" id="goodComments">
+                    {% for comment, insight in comments %}
+                        {% if insight == "Good Quality" %}
+                            <p>{{ comment }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <span class="show-more" onclick="toggleComments('goodComments')">Show More</span>
+            </div>
+
+            <div class="comments-container">
+                <h2>Poor Quality Comments</h2>
+                <div class="poor-quality comments" id="poorComments">
+                    {% for comment, insight in comments %}
+                        {% if insight == "Poor Quality" %}
+                            <p>{{ comment }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <span class="show-more" onclick="toggleComments('poorComments')">Show More</span>
+            </div>
+            <button class="back-button" onclick="goBack()">Back</button>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="qualityChart" width="400" height="400"></canvas>
+            <h2 style="text-align: center;">Insights</h2>
+        </div>
+    </div>
+
+    <script>
+        function toggleComments(id) {
+            var comments = document.getElementById(id);
+            var showMoreText = comments.nextElementSibling;
+            if (comments.classList.contains('show')) {
+                comments.classList.remove('show');
+                showMoreText.innerText = 'Show More';
+            } else {
+                comments.classList.add('show');
+                showMoreText.innerText = 'Show Less';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var ctx = document.getElementById('qualityChart').getContext('2d');
+            var qualityChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Good Quality', 'Poor Quality'],
+                    datasets: [{
+                        data: [{{ good_quality_count }}, {{ poor_quality_count }}],
+                        backgroundColor: ['#36a2eb', '#ff6384'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        });
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>
